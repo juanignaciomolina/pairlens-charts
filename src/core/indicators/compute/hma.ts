@@ -1,7 +1,7 @@
 import { computeWMA } from './wma'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeHMA: IndicatorComputeFn = ({ bars, params }) => {
+export const computeHMA: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 9))
   const halfPeriod = Math.max(1, Math.floor(period / 2))
   const sqrtPeriod = Math.max(1, Math.floor(Math.sqrt(period)))

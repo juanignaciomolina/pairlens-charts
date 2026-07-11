@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeADX: IndicatorComputeFn = ({ bars, params }) => {
+export const computeADX: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 14))
   if (bars.length <= period * 2) {
     return []

@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeUltimateOscillator: IndicatorComputeFn = ({
+export const computeUltimateOscillator: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

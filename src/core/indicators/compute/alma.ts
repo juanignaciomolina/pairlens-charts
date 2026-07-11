@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeALMA: IndicatorComputeFn = ({ bars, params }) => {
+export const computeALMA: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 9))
   const offset = Math.max(0, Math.min(1, Number(params.offset ?? 0.85)))
   const sigma = Math.max(0.1, Number(params.sigma ?? 6))

@@ -1,6 +1,9 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeParabolicSAR: IndicatorComputeFn = ({ bars, params }) => {
+export const computeParabolicSAR: SyncIndicatorComputeFn = ({
+  bars,
+  params,
+}) => {
   const afStart = Math.max(0.001, Number(params.afStart ?? 0.02))
   const afStep = Math.max(0.001, Number(params.afStep ?? 0.02))
   const afMax = Math.max(afStep, Number(params.afMax ?? 0.2))

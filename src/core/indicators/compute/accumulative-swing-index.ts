@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeAccumulativeSwingIndex: IndicatorComputeFn = ({
+export const computeAccumulativeSwingIndex: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

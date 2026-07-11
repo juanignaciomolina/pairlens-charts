@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computePivotPoints: IndicatorComputeFn = ({
+export const computePivotPoints: SyncIndicatorComputeFn = ({
   bars,
   params,
   timeframeMs,

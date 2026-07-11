@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeSMMA: IndicatorComputeFn = ({ bars, params }) => {
+export const computeSMMA: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(1, Number(params.period ?? 7))
   if (bars.length < period) {
     return []

@@ -1,8 +1,8 @@
 import { computeATR } from './atr'
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeKeltnerChannels: IndicatorComputeFn = ({
+export const computeKeltnerChannels: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

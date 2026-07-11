@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeChoppinessIndex: IndicatorComputeFn = ({
+export const computeChoppinessIndex: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

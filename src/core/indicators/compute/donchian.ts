@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeDonchianChannels: IndicatorComputeFn = ({
+export const computeDonchianChannels: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

@@ -1,7 +1,7 @@
 import { computeRSI } from './rsi'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeConnorsRSI: IndicatorComputeFn = ({ bars, params }) => {
+export const computeConnorsRSI: SyncIndicatorComputeFn = ({ bars, params }) => {
   const rsiPeriod = Math.max(1, Number(params.rsiPeriod ?? 3))
   const streakPeriod = Math.max(1, Number(params.streakPeriod ?? 2))
   const rankPeriod = Math.max(1, Number(params.rankPeriod ?? 100))

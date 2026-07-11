@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeKAMA: IndicatorComputeFn = ({ bars, params }) => {
+export const computeKAMA: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 10))
   const fastPeriod = Math.max(1, Number(params.fast ?? 2))
   const slowPeriod = Math.max(fastPeriod + 1, Number(params.slow ?? 30))

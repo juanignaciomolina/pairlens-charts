@@ -1,4 +1,4 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
 const smma = (
   bars: Array<{ close: number }>,
@@ -24,7 +24,7 @@ const smma = (
   return values
 }
 
-export const computeAlligator: IndicatorComputeFn = ({ bars, params }) => {
+export const computeAlligator: SyncIndicatorComputeFn = ({ bars, params }) => {
   const jawPeriod = Math.max(2, Number(params.jawPeriod ?? 13))
   const teethPeriod = Math.max(2, Number(params.teethPeriod ?? 8))
   const lipsPeriod = Math.max(2, Number(params.lipsPeriod ?? 5))

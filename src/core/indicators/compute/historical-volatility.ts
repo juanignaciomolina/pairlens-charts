@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeHistoricalVolatility: IndicatorComputeFn = ({
+export const computeHistoricalVolatility: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

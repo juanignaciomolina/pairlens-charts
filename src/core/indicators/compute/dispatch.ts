@@ -88,9 +88,12 @@ import { computeWilliamsFractal } from './williams-fractal'
 import { computeWilliamsR } from './williams-r'
 import { computeWMA } from './wma'
 import { computeZigZag } from './zigzag'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const INDICATOR_COMPUTE_DISPATCH: Record<string, IndicatorComputeFn> = {
+export const INDICATOR_COMPUTE_DISPATCH: Record<
+  string,
+  SyncIndicatorComputeFn
+> = {
   EMA: computeEMA,
   SMA: computeSMA,
   RSI: computeRSI,

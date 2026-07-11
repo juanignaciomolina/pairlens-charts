@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeZigZag: IndicatorComputeFn = ({ bars, params }) => {
+export const computeZigZag: SyncIndicatorComputeFn = ({ bars, params }) => {
   const deviation = Math.max(0.1, Number(params.deviation ?? 5))
 
   if (bars.length < 2) {

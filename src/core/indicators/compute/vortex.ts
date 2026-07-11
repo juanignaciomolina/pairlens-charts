@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeVortexIndicator: IndicatorComputeFn = ({
+export const computeVortexIndicator: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

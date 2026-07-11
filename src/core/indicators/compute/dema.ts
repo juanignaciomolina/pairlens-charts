@@ -1,7 +1,7 @@
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeDEMA: IndicatorComputeFn = ({ bars, params }) => {
+export const computeDEMA: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(1, Number(params.period ?? 20))
   const ema1 = computeEMA({ bars, params: { period }, timeframeMs: 0 })
   if (ema1.length === 0) {

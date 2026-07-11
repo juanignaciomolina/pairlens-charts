@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeDirectionalMovement: IndicatorComputeFn = ({
+export const computeDirectionalMovement: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

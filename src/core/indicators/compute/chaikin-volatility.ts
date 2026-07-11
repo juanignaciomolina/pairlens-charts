@@ -1,7 +1,7 @@
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeChaikinVolatility: IndicatorComputeFn = ({
+export const computeChaikinVolatility: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

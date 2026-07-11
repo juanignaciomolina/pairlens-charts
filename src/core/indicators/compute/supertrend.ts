@@ -1,7 +1,7 @@
 import { computeATR } from './atr'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeSuperTrend: IndicatorComputeFn = ({ bars, params }) => {
+export const computeSuperTrend: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 10))
   const multiplier = Math.max(0.1, Number(params.multiplier ?? 3))
 

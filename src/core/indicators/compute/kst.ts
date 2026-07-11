@@ -1,6 +1,6 @@
 import { computeROC } from './roc'
 import { computeSMA } from './sma'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
 const smaFromValues = (
   values: Array<{ ts: number; value?: number }>,
@@ -17,7 +17,7 @@ const smaFromValues = (
   return computeSMA({ bars: fakeBars, params: { period }, timeframeMs: 0 })
 }
 
-export const computeKST: IndicatorComputeFn = ({ bars, params }) => {
+export const computeKST: SyncIndicatorComputeFn = ({ bars, params }) => {
   const roc1 = Math.max(1, Number(params.roc1 ?? 10))
   const roc2 = Math.max(1, Number(params.roc2 ?? 15))
   const roc3 = Math.max(1, Number(params.roc3 ?? 20))

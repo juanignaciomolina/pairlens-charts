@@ -1,7 +1,7 @@
 import { computeRSI } from './rsi'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeStochRSI: IndicatorComputeFn = ({ bars, params }) => {
+export const computeStochRSI: SyncIndicatorComputeFn = ({ bars, params }) => {
   const rsiPeriod = Math.max(2, Number(params.rsiPeriod ?? 14))
   const stochPeriod = Math.max(2, Number(params.stochPeriod ?? 14))
   const kSmooth = Math.max(1, Number(params.kSmooth ?? 3))

@@ -1,7 +1,10 @@
 import { computeROC } from './roc'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeCoppockCurve: IndicatorComputeFn = ({ bars, params }) => {
+export const computeCoppockCurve: SyncIndicatorComputeFn = ({
+  bars,
+  params,
+}) => {
   const longPeriod = Math.max(2, Number(params.longPeriod ?? 14))
   const shortPeriod = Math.max(1, Number(params.shortPeriod ?? 11))
   const wmaPeriod = Math.max(1, Number(params.wmaPeriod ?? 10))

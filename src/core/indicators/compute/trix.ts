@@ -1,5 +1,5 @@
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
 const emaFromValues = (
   values: Array<{ ts: number; value?: number }>,
@@ -18,7 +18,7 @@ const emaFromValues = (
     timeframeMs: 0,
   })
 
-export const computeTRIX: IndicatorComputeFn = ({ bars, params }) => {
+export const computeTRIX: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 15))
   const signalPeriod = Math.max(1, Number(params.signal ?? 9))
 

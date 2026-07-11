@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeWilliamsFractal: IndicatorComputeFn = ({
+export const computeWilliamsFractal: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

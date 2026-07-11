@@ -1,4 +1,4 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
 const highLow = (
   bars: Array<{ high: number; low: number }>,
@@ -15,7 +15,7 @@ const highLow = (
   return { highest, lowest }
 }
 
-export const computeIchimoku: IndicatorComputeFn = ({ bars, params }) => {
+export const computeIchimoku: SyncIndicatorComputeFn = ({ bars, params }) => {
   const tenkanPeriod = Math.max(2, Number(params.tenkanPeriod ?? 9))
   const kijunPeriod = Math.max(2, Number(params.kijunPeriod ?? 26))
   const senkouBPeriod = Math.max(2, Number(params.senkouBPeriod ?? 52))

@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeFisherTransform: IndicatorComputeFn = ({
+export const computeFisherTransform: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

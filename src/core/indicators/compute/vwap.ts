@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeVWAP: IndicatorComputeFn = ({ bars }) => {
+export const computeVWAP: SyncIndicatorComputeFn = ({ bars }) => {
   let cumulativeVolume = 0
   let cumulativeTypicalPriceVolume = 0
 

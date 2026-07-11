@@ -1,6 +1,9 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computePriceChannel: IndicatorComputeFn = ({ bars, params }) => {
+export const computePriceChannel: SyncIndicatorComputeFn = ({
+  bars,
+  params,
+}) => {
   const period = Math.max(2, Number(params.period ?? 20))
   if (bars.length < period) {
     return []

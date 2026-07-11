@@ -1,7 +1,7 @@
 import { computeBollingerBands } from './bollinger'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeBBPercent: IndicatorComputeFn = ({ bars, params }) => {
+export const computeBBPercent: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 20))
   const stdDev = Math.max(0.1, Number(params.stdDev ?? 2))
 

@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeROC: IndicatorComputeFn = ({ bars, params }) => {
+export const computeROC: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(1, Number(params.period ?? 12))
   if (bars.length <= period) {
     return []

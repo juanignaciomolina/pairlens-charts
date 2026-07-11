@@ -1,7 +1,7 @@
 import { computeSMA } from './sma'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeDPO: IndicatorComputeFn = ({ bars, params }) => {
+export const computeDPO: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 20))
   const shift = Math.floor(period / 2) + 1
 

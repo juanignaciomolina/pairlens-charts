@@ -1,7 +1,7 @@
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeElderForceIndex: IndicatorComputeFn = ({
+export const computeElderForceIndex: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

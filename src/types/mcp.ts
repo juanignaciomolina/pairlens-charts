@@ -10,10 +10,12 @@ import type {
 import type { DrawingObject, DrawingToolType } from './drawings'
 import type {
   IndicatorComputation,
+  IndicatorDefinition,
   IndicatorInstance,
   IndicatorInstanceInput,
   IndicatorPane,
   IndicatorParams,
+  IndicatorType,
 } from './indicators'
 import type { CustomSeriesBar, CustomSeriesInput } from './custom-series'
 import type { SeriesPrimitiveInput } from './primitives'
@@ -292,6 +294,10 @@ export type FastFinancialChartRef = {
     visible: boolean
     barCount: number
   }>
+  /** Register an indicator definition at runtime (e.g. a `custom:*` indicator with an async compute) */
+  registerIndicatorDefinition: (definition: IndicatorDefinition) => void
+  /** Unregister an indicator definition by type (returns false when not registered) */
+  unregisterIndicatorDefinition: (type: IndicatorType) => boolean
 }
 
 export type ChartMCP = {

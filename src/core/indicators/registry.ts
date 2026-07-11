@@ -87,6 +87,10 @@ export class DefaultIndicatorRegistry {
     this.definitions.set(definition.type, definition)
   }
 
+  remove(type: IndicatorInstance['type']): boolean {
+    return this.definitions.delete(type)
+  }
+
   get(type: IndicatorInstance['type']): IndicatorDefinition | undefined {
     return this.definitions.get(type)
   }

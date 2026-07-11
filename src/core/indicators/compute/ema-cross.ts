@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeEMACross: IndicatorComputeFn = ({ bars, params }) => {
+export const computeEMACross: SyncIndicatorComputeFn = ({ bars, params }) => {
   const fastPeriod = Math.max(1, Number(params.fastPeriod ?? 9))
   const slowPeriod = Math.max(1, Number(params.slowPeriod ?? 21))
 

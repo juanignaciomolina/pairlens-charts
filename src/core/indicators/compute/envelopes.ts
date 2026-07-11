@@ -1,7 +1,7 @@
 import { computeSMA } from './sma'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeEnvelopes: IndicatorComputeFn = ({ bars, params }) => {
+export const computeEnvelopes: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(1, Number(params.period ?? 20))
   const deviation = Math.max(0, Number(params.deviation ?? 10))
 

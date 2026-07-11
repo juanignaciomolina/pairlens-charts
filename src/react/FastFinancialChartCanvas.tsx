@@ -143,6 +143,10 @@ export const FastFinancialChartCanvas = memo(
           updateCustomSeriesData: (id, bars) =>
             engine.updateCustomSeriesData(id, bars),
           listCustomSeries: () => engine.listCustomSeries(),
+          registerIndicatorDefinition: (definition) =>
+            engine.registerIndicatorDefinition(definition),
+          unregisterIndicatorDefinition: (type) =>
+            engine.unregisterIndicatorDefinition(type),
         })
 
         return () => {
@@ -301,6 +305,14 @@ export const FastFinancialChartCanvas = memo(
           },
           listCustomSeries: () => {
             return engineRef.current?.listCustomSeries() ?? []
+          },
+          registerIndicatorDefinition: (definition) => {
+            engineRef.current?.registerIndicatorDefinition(definition)
+          },
+          unregisterIndicatorDefinition: (type) => {
+            return (
+              engineRef.current?.unregisterIndicatorDefinition(type) ?? false
+            )
           },
         }),
         [],

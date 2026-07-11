@@ -1,4 +1,4 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
 function averageRanks(values: Array<number>): Array<number> {
   const n = values.length
@@ -26,7 +26,7 @@ function averageRanks(values: Array<number>): Array<number> {
   return ranks
 }
 
-export const computeRankCorrelationIndex: IndicatorComputeFn = ({
+export const computeRankCorrelationIndex: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

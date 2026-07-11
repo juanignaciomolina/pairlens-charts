@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeChandeKrollStop: IndicatorComputeFn = ({
+export const computeChandeKrollStop: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

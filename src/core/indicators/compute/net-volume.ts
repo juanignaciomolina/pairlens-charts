@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeNetVolume: IndicatorComputeFn = ({ bars }) => {
+export const computeNetVolume: SyncIndicatorComputeFn = ({ bars }) => {
   if (bars.length === 0) {
     return []
   }

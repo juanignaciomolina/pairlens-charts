@@ -1,5 +1,5 @@
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
 const emaFromValues = (
   values: Array<{ ts: number; value?: number }>,
@@ -18,7 +18,7 @@ const emaFromValues = (
     timeframeMs: 0,
   })
 
-export const computeSMIErgodic: IndicatorComputeFn = ({ bars, params }) => {
+export const computeSMIErgodic: SyncIndicatorComputeFn = ({ bars, params }) => {
   const longPeriod = Math.max(1, Number(params.longPeriod ?? 20))
   const shortPeriod = Math.max(1, Number(params.shortPeriod ?? 5))
   const signalPeriod = Math.max(1, Number(params.signal ?? 5))

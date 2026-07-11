@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeStochastic: IndicatorComputeFn = ({ bars, params }) => {
+export const computeStochastic: SyncIndicatorComputeFn = ({ bars, params }) => {
   const kPeriod = Math.max(2, Number(params.kPeriod ?? 14))
   const dPeriod = Math.max(1, Number(params.dPeriod ?? 3))
   const smooth = Math.max(1, Number(params.smooth ?? 3))

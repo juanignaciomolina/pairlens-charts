@@ -10,6 +10,10 @@ import { clampViewport, viewportFromPreset } from '../data/viewport-slicer'
 import { createDefaultDrawingRegistry } from '../drawings/registry'
 import { toDrawingPoint, toXFromTs, toYFromPrice } from '../drawings/transforms'
 import { findDrawingById } from '../drawings/tools/select-tool'
+import {
+  computeCustomIndicator,
+  isCustomIndicatorType,
+} from '../indicators/custom-compute'
 import { createIndicatorWorkerClient } from '../indicators/worker/worker-client'
 import { createMcpToolSchemas } from '../mcp/schema'
 import { renderBaselinePass } from '../render/canvas2d/baseline-pass'
@@ -65,8 +69,10 @@ import type {
   DrawingToolType,
   FastFinancialChartProps,
   IndicatorComputation,
+  IndicatorDefinition,
   IndicatorInstance,
   IndicatorInstanceInput,
+  IndicatorType,
   MCPToolSchema,
   MouseEventParams,
   NumericRange,
@@ -2234,12 +2240,25 @@ export class ChartEngine {
         return null
       }
 
-      const response = await this.indicatorWorker.compute({
+      const request = {
         requestId: buildIndicatorRequestId(),
         indicator,
         bars: series.bars,
         timeframeMs,
-      })
+      }
+
+      // Built-in indicators compute in the worker; registry-defined custom
+      // indicators (whose compute may be async, e.g. a Python round-trip)
+      // compute on the main thread. Both partitions run concurrently and
+      // resolve to the same worker response shape (errors included), so a
+      // failing or unregistered custom type degrades exactly like a worker
+      // error and can never reject the batch.
+      const response = isCustomIndicatorType(indicator.type)
+        ? await computeCustomIndicator(
+            this.store.indicatorRegistry.get(indicator.type),
+            request,
+          )
+        : await this.indicatorWorker.compute(request)
 
       if (response.error) {
         return null
@@ -3439,6 +3458,29 @@ export class ChartEngine {
   setIndicators(indicators: Array<IndicatorInstanceInput>): void {
     this.store.setIndicators(indicators)
     this.scheduleIndicatorCompute(true)
+  }
+
+  /**
+   * Register an indicator definition at runtime (e.g. a `custom:*` indicator
+   * backed by an external async runtime). Triggers a recompute so instances
+   * whose definition arrived late pick it up.
+   */
+  registerIndicatorDefinition(definition: IndicatorDefinition): void {
+    this.store.indicatorRegistry.register(definition)
+    this.scheduleIndicatorCompute()
+  }
+
+  /**
+   * Unregister an indicator definition by type. Returns false when the type
+   * was not registered. Instances of the type remain but stop producing
+   * values (unsupported-type error) and no longer render.
+   */
+  unregisterIndicatorDefinition(type: IndicatorType): boolean {
+    const removed = this.store.indicatorRegistry.remove(type)
+    if (removed) {
+      this.scheduleIndicatorCompute()
+    }
+    return removed
   }
 
   setDrawings(drawings: Array<DrawingObject>): void {

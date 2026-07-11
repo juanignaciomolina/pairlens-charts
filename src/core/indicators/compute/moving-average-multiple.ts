@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeMovingAverageMultiple: IndicatorComputeFn = ({
+export const computeMovingAverageMultiple: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

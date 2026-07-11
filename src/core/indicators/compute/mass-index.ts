@@ -1,7 +1,7 @@
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeMassIndex: IndicatorComputeFn = ({ bars, params }) => {
+export const computeMassIndex: SyncIndicatorComputeFn = ({ bars, params }) => {
   const emaPeriod = Math.max(1, Number(params.emaPeriod ?? 9))
   const sumPeriod = Math.max(1, Number(params.sumPeriod ?? 25))
 

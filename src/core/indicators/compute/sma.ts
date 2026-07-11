@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeSMA: IndicatorComputeFn = ({ bars, params }) => {
+export const computeSMA: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(1, Number(params.period ?? 20))
   const values: Array<{ ts: number; value: number }> = []
 

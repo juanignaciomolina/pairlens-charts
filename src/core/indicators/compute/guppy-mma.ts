@@ -1,11 +1,11 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
 const SHORT_PERIODS = [3, 5, 8, 10, 12, 15] as const
 const LONG_PERIODS = [30, 35, 40, 45, 50, 60] as const
 const ALL_PERIODS = [...SHORT_PERIODS, ...LONG_PERIODS] as const
 const MAX_PERIOD = 60
 
-export const computeGuppyMMA: IndicatorComputeFn = ({ bars }) => {
+export const computeGuppyMMA: SyncIndicatorComputeFn = ({ bars }) => {
   if (bars.length < MAX_PERIOD) {
     return []
   }

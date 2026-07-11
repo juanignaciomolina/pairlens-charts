@@ -1,7 +1,10 @@
 import { computeSMA } from './sma'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeBollingerBands: IndicatorComputeFn = ({ bars, params }) => {
+export const computeBollingerBands: SyncIndicatorComputeFn = ({
+  bars,
+  params,
+}) => {
   const period = Math.max(2, Number(params.period ?? 20))
   const stdDev = Math.max(0.1, Number(params.stdDev ?? 2))
   const sma = computeSMA({ bars, params: { period }, timeframeMs: 0 })

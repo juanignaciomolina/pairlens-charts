@@ -149,9 +149,22 @@ export type IndicatorComputeContext = {
   timeframeMs: number
 }
 
-export type IndicatorComputeFn = (
+/**
+ * Synchronous compute function — the contract for built-in indicators, which
+ * run inside the indicator worker (workers can't await host-side runtimes).
+ */
+export type SyncIndicatorComputeFn = (
   context: IndicatorComputeContext,
 ) => Array<IndicatorValuePoint>
+
+/**
+ * Indicator compute function. Registry-defined `custom:*` indicators may
+ * return a Promise (e.g. values produced by an external Python runtime);
+ * they are awaited on the main thread instead of the indicator worker.
+ */
+export type IndicatorComputeFn = (
+  context: IndicatorComputeContext,
+) => Array<IndicatorValuePoint> | Promise<Array<IndicatorValuePoint>>
 
 export type IndicatorPresenterContext = {
   ctx: CanvasRenderingContext2D

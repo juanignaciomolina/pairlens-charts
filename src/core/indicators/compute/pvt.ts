@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computePVT: IndicatorComputeFn = ({ bars }) => {
+export const computePVT: SyncIndicatorComputeFn = ({ bars }) => {
   if (bars.length === 0) {
     return []
   }

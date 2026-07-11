@@ -1,6 +1,9 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeBalanceOfPower: IndicatorComputeFn = ({ bars, params }) => {
+export const computeBalanceOfPower: SyncIndicatorComputeFn = ({
+  bars,
+  params,
+}) => {
   const period = Math.max(1, Number(params.period ?? 14))
   if (bars.length < period) {
     return []

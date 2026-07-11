@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeMcGinleyDynamic: IndicatorComputeFn = ({
+export const computeMcGinleyDynamic: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

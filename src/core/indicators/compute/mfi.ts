@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeMFI: IndicatorComputeFn = ({ bars, params }) => {
+export const computeMFI: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(2, Number(params.period ?? 14))
   if (bars.length <= period) {
     return []

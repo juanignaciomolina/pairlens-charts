@@ -1,6 +1,9 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeMAWithEMACross: IndicatorComputeFn = ({ bars, params }) => {
+export const computeMAWithEMACross: SyncIndicatorComputeFn = ({
+  bars,
+  params,
+}) => {
   const smaPeriod = Math.max(1, Number(params.smaPeriod ?? 10))
   const emaPeriod = Math.max(1, Number(params.emaPeriod ?? 21))
 

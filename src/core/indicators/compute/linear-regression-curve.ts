@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeLinearRegressionCurve: IndicatorComputeFn = ({
+export const computeLinearRegressionCurve: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

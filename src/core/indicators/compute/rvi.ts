@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeRVI: IndicatorComputeFn = ({ bars, params }) => {
+export const computeRVI: SyncIndicatorComputeFn = ({ bars, params }) => {
   const period = Math.max(1, Number(params.period ?? 10))
   const signalPeriod = Math.max(1, Number(params.signal ?? 4))
 

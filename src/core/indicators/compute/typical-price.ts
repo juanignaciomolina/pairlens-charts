@@ -1,6 +1,6 @@
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeTypicalPrice: IndicatorComputeFn = ({ bars }) => {
+export const computeTypicalPrice: SyncIndicatorComputeFn = ({ bars }) => {
   return bars.map((bar) => ({
     ts: bar.ts,
     value: (bar.high + bar.low + bar.close) / 3,

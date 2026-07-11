@@ -1,7 +1,7 @@
 import { computeSMA } from './sma'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeVolumeOscillator: IndicatorComputeFn = ({
+export const computeVolumeOscillator: SyncIndicatorComputeFn = ({
   bars,
   params,
 }) => {

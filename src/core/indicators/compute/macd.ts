@@ -1,7 +1,7 @@
 import { computeEMA } from './ema'
-import type { IndicatorComputeFn } from '../../../types'
+import type { SyncIndicatorComputeFn } from '../../../types'
 
-export const computeMACD: IndicatorComputeFn = ({ bars, params }) => {
+export const computeMACD: SyncIndicatorComputeFn = ({ bars, params }) => {
   const fast = Math.max(2, Number(params.fast ?? 12))
   const slow = Math.max(fast + 1, Number(params.slow ?? 26))
   const signalPeriod = Math.max(2, Number(params.signal ?? 9))
