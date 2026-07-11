@@ -1,0 +1,68 @@
+{
+  "name": "@pairlens/charts",
+  "version": "1.3.0",
+  "description": "Fast Financial Charts — a WebGL2 financial charting engine with 90 indicators, drawings, multi-pane layouts, and an MCP-compatible AI control surface. Free and MIT-licensed.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanignaciomolina/pairlens-charts.git"
+  },
+  "homepage": "https://github.com/juanignaciomolina/pairlens-charts#readme",
+  "bugs": {
+    "url": "https://github.com/juanignaciomolina/pairlens-charts/issues"
+  },
+  "keywords": [
+    "charts",
+    "charting",
+    "financial",
+    "candlestick",
+    "trading",
+    "webgl",
+    "indicators",
+    "react",
+    "mcp"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc --project tsconfig.json --noEmit",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "bun test src/__tests__/*.test.ts"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types/index.ts",
+    "./mcp": "./src/mcp.ts",
+    "./indicators": "./src/indicators.ts",
+    "./drawings": "./src/drawings.ts",
+    "./theme": "./src/theme.ts",
+    "./financial-chart": "./src/financial-chart.ts",
+    "./depth-chart": "./src/depth-chart.ts",
+    "./react": "./src/react/index.ts",
+    "./react/financial-chart": "./src/react/financial-chart.ts",
+    "./react/depth-chart": "./src/react/depth-chart.ts"
+  },
+  "files": [
+    "src",
+    "INDICATORS.md",
+    "README.md",
+    "LICENSE"
+  ]
+}
