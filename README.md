@@ -13,7 +13,7 @@ It is **headless by design**: the engine owns the canvases and the hot path; you
 - **AI-ready** — a deterministic, MCP-compatible tool schema + executor lets an AI (or your automation) drive the chart the same way a user does.
 - **Actually open** — no license tiers, no watermark, no "contact sales" features. Fork it, extend it, ship it.
 
-> **Status:** this is the standalone home of the library. It is consumed by the Pairlens terminal as a regular dependency and can be used by any app. The package is distributed as TypeScript source (see [Installation](#installation)); an NPM release with prebuilt output is planned.
+> **Status:** this is the standalone home of the library. It is consumed by the Pairlens terminal as a regular dependency and can be used by any app. The package is published to NPM as [`@pairlens/charts`](https://www.npmjs.com/package/@pairlens/charts) and is distributed as TypeScript source (see [Installation](#installation)); prebuilt output is planned.
 
 ## Core Goals
 
@@ -78,17 +78,17 @@ Why this split:
 
 ## Installation
 
-Install straight from GitHub:
+Install from NPM:
 
 ```bash
-bun add github:juanignaciomolina/pairlens-charts
+bun add @pairlens/charts
 # or
-pnpm add github:juanignaciomolina/pairlens-charts
+pnpm add @pairlens/charts
 # or
-npm i github:juanignaciomolina/pairlens-charts
+npm i @pairlens/charts
 ```
 
-This installs the package as `@pairlens/charts`. An NPM release (`npm i @pairlens/charts`) with prebuilt output is planned.
+Installing straight from GitHub (`bun add github:juanignaciomolina/pairlens-charts`) also works and yields the same package layout.
 
 **The package ships TypeScript source.** Entry points resolve to `.ts`/`.tsx` files, so use a bundler that understands TypeScript out of the box — Vite, esbuild, Bun, Rspack, or webpack with a TS loader. This is also what lets the indicator Web Worker (`new Worker(new URL(...))`) work naturally under modern bundlers.
 
@@ -790,6 +790,15 @@ From package root:
 bun run typecheck
 bun run test
 bun run build
+```
+
+## Releasing (maintainers)
+
+Releases are published to NPM by CI (`.github/workflows/publish.yml`) whenever a `v*` tag is pushed. The workflow re-runs typecheck + tests, verifies the tag matches `package.json`, and publishes with [provenance](https://docs.npmjs.com/generating-provenance-statements). It authenticates with the `NPM_TOKEN` repository secret (a granular automation token with publish rights on the `@pairlens` scope).
+
+```bash
+npm version minor        # bumps package.json and creates the vX.Y.Z tag
+git push origin main --follow-tags
 ```
 
 ## License

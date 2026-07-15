@@ -24,6 +24,9 @@
   ],
   "type": "module",
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.json --noEmit",
     "typecheck": "tsc --project tsconfig.json --noEmit",
@@ -61,6 +64,7 @@
   },
   "files": [
     "src",
+    "!src/__tests__",
     "INDICATORS.md",
     "README.md",
     "LICENSE"
