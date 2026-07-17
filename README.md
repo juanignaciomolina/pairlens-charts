@@ -1,84 +1,18 @@
 # Fast Financial Charts
 
-**A WebGL2 financial charting engine built from the ground up for performance — free, MIT-licensed, and a product in its own right.**
+**A WebGL2 financial charting library for the web: candlesticks, 90 built-in indicators, drawings, multi-pane layouts, live tick streaming, and an AI control surface. Free and MIT licensed.**
 
-`@pairlens/charts` (React bindings included under `@pairlens/charts/react`) is the engine that powers the [Pairlens](https://github.com/juanignaciomolina/pairlens) terminal, developed to stand on its own against commercial charting SDKs: high-frequency tick streams, large OHLCV histories, technical indicators, trader drawings, multi-pane layouts, order visualization, and an AI tool-driven control surface — with rendering and interaction performance as the first constraint, not an afterthought.
+`@pairlens/charts` is the chart engine behind the [Pairlens](https://github.com/juanignaciomolina/pairlens) trading terminal. It is not a demo extracted from an app: the exact package published here renders live exchange feeds in production, every day, at tick rate. It was built to stand next to commercial charting SDKs and hold its own.
 
-It is **headless by design**: the engine owns the canvases and the hot path; your app owns every pixel of UI chrome (toolbars, HUDs, menus, modals), so it drops into any design system.
+Reasons you might pick it over the alternatives:
 
-**Why another charting library?**
-
-- **Built for the financial world specifically** — candles, bars, line/area/baseline/histogram series, price-scale modes (linear/log/percent), session-aware time scales, indicator panes, drawings with magnet snapping, order/position annotations.
-- **Performance first** — WebGL2 geometry for the main series, layered canvases with a dirty-flag scheduler, O(1) imperative tick updates that bypass React entirely, indicator computation off the main thread.
-- **AI-ready** — a deterministic, MCP-compatible tool schema + executor lets an AI (or your automation) drive the chart the same way a user does.
-- **Actually open** — no license tiers, no watermark, no "contact sales" features. Fork it, extend it, ship it.
-
-> **Status:** this is the standalone home of the library. It is consumed by the Pairlens terminal as a regular dependency and can be used by any app. The package is published to NPM as [`@pairlens/charts`](https://www.npmjs.com/package/@pairlens/charts) and is distributed as TypeScript source (see [Installation](#installation)); prebuilt output is planned.
-
-## Core Goals
-
-- Performance-first rendering for large OHLCV datasets and live tick streams.
-- Headless composition so parent apps fully own UI chrome (menus, HUDs, toolbars, modals).
-- Composable architecture where indicator calculation and rendering are separate concerns.
-- AI-first deterministic control surface through MCP-compatible tool schemas and executor.
-- Extensibility for custom indicators, custom drawing shapes, series primitives, and custom series types.
-
-## Architecture
-
-The library is split into three layers:
-
-- Core engine (no React): data stores, render pipeline, interaction model, command bus.
-- Feature modules: indicators, drawings, MCP tooling, theme resolution.
-- React adapter: `<FastFinancialChart />`, imperative ref API, hooks, render slots.
-
-High-level pipeline:
-
-1. Parent provides initial `series[]` and config.
-2. Engine builds WebGL2 + Canvas overlay stack.
-3. Dirty-flag scheduler redraws only affected layers.
-4. Tick/bar updates flow through imperative ref for O(1) hot path updates.
-5. Indicators compute in worker (or inline fallback), then commit once.
-6. Parent receives chart events and renders custom UI around chart state.
-
-## Rendering Model
-
-The chart uses a layered canvas stack:
-
-- Main canvas (WebGL2): candles/bar/line/area/baseline/histogram geometry.
-- Indicator canvas (Canvas2D): indicator presenters (overlay + N user panes), series primitives, custom series.
-- Overlay canvas (Canvas2D): axis labels/text.
-- UI canvas (Canvas2D): crosshair + interaction overlays.
-
-Why this split:
-
-- Geometry stays in GPU path.
-- Text/UI avoids WebGL font-atlas complexity.
-- Crosshair/pointer movement only invalidates cheap UI layers.
-
-## Performance Design Decisions
-
-- Dirty flags + RAF scheduler: render only changed layers.
-- Viewport slicing: render complexity scales with visible bars, not full dataset size.
-- Incremental tick ingestion: same-bucket tick mutates last bar in-place.
-- Burst ingestion API: `applyTicks(updates)` for batched live feeds.
-- Snapshot split: lightweight snapshots by default; heavy data only by explicit request.
-- Parallel indicator scheduling: compute requests execute in parallel and commit once.
-- Pre-allocated interleaved Float32Array in WebGL candle program: single `gl.bufferData` call per frame, zero intermediate allocations.
-- Cached hex→RGBA conversion: color parsing runs once on theme change, not per frame.
-- Incremental price range tracking: min/max recalculated only on viewport or series change, not every tick.
-- `getBoundingClientRect` cached on resize: pointer-move path performs no layout recalculation.
-- Structural sharing for undo stack: only the changed drawing is cloned, not the entire array.
-- WebGL context loss recovery: `webglcontextlost` / `webglcontextrestored` handlers re-initialize programs and re-upload buffers.
-- `preserveDrawingBuffer: false` for lower GPU overhead.
-- Shallow-compare guard on React `updateProps`: rest-spread props reference is compared by key before calling engine, eliminating unnecessary work on parent re-renders.
-- MCP `getData` pagination: `limit`/`offset` params avoid cloning full bar arrays for large datasets.
-- GPU-side viewport transform: NDC conversions moved to vertex shader uniforms. Viewport pan/zoom is O(1) uniform update with no buffer refill. All bars buffered once, GPU clips offscreen geometry.
-- Pre-bucketed z-order cache in PrimitiveRegistry: O(1) render-time lookup per z-order layer, rebuilt lazily on mutation only.
-- Visible-instance cache in CustomSeriesStore: avoids per-frame array allocation for custom series visibility filtering.
+- **You get a lot of chart.** [90 technical indicators](./INDICATORS.md) out of the box, seven chart types, trader drawings with magnet snapping, price lines and buy/sell markers, multi-pane layouts with resizable separators, log/percent/indexed price scales, localization, and touch support. Most libraries make you build or buy half of this.
+- **It is fast where it matters.** The main series renders as WebGL2 geometry, live ticks flow through an imperative O(1) hot path that bypasses React entirely, and indicators compute in a Web Worker off the main thread. Pan and zoom are single uniform updates on the GPU. It stays smooth with large histories and high-frequency feeds.
+- **It is headless.** The engine owns the canvases and the hot path; your app owns every pixel of UI chrome (toolbars, HUDs, context menus, modals) through events and render slots. No CSS framework dependency, no styles to fight. It drops into ShadCN, Tailwind, or whatever your design system is.
+- **An AI can drive it.** A deterministic, MCP-compatible schema exposes 52 tools (add indicators, draw, navigate, read data back, take screenshots), so an agent or your automation can operate the chart the same way a user does.
+- **No licensing drama.** MIT, for real. No license tiers, no watermark, no attribution requirement, no "contact sales" features, no repo you can read but not ship. Fork it, extend it, sell with it.
 
 ## Installation
-
-Install from NPM:
 
 ```bash
 bun add @pairlens/charts
@@ -90,11 +24,13 @@ npm i @pairlens/charts
 
 Installing straight from GitHub (`bun add github:juanignaciomolina/pairlens-charts`) also works and yields the same package layout.
 
-**The package ships TypeScript source.** Entry points resolve to `.ts`/`.tsx` files, so use a bundler that understands TypeScript out of the box — Vite, esbuild, Bun, Rspack, or webpack with a TS loader. This is also what lets the indicator Web Worker (`new Worker(new URL(...))`) work naturally under modern bundlers.
+**The package ships TypeScript source.** Entry points resolve to `.ts`/`.tsx` files, so use a bundler that understands TypeScript out of the box: Vite, esbuild, Bun, Rspack, or webpack with a TS loader. This is also what lets the indicator Web Worker (`new Worker(new URL(...))`) work naturally under modern bundlers. Prebuilt output is planned.
 
 React is an optional peer dependency: the core engine (`@pairlens/charts`, `/mcp`, `/indicators`, `/drawings`, `/theme`) has no React dependency at all; only the `@pairlens/charts/react` entry points need React 19+.
 
 ## Quick Start (React)
+
+A candlestick chart with an EMA overlay and an RSI pane:
 
 ```tsx
 import { useMemo, useRef } from 'react'
@@ -173,59 +109,21 @@ chartRef.current?.appendBar({
 })
 ```
 
-## Controlled vs Uncontrolled State
+## Built-in Indicators (90)
 
-`FastFinancialChart` supports controlled or uncontrolled operation for expensive domains:
+90 built-in technical indicators covering the major TradingView Advanced Charts categories. See [INDICATORS.md](./INDICATORS.md) for the full list with parameters, pane types, and implementation details.
 
-```tsx
-<FastFinancialChart
-  controlled={{
-    viewport: false,
-    drawings: false,
-    indicators: false,
-  }}
-/>
-```
+| Category               | Count | Examples                                                                                                                                  |
+| ---------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Moving Averages        | 17    | EMA, SMA, WMA, DEMA, TEMA, VWAP, HMA, VWMA, ALMA, KAMA, SMMA, LSMA, McGinley Dynamic, Guppy MMA, Hamming                                  |
+| Oscillators & Momentum | 35    | RSI, MACD, Stochastic, StochRSI, Williams %R, CCI, MFI, ADX, TRIX, Fisher Transform, Connors RSI, TSI, Price Oscillator, Rank Correlation |
+| Bands & Channels       | 5     | Bollinger Bands, Donchian Channels, Keltner Channels, Envelopes, Price Channel                                                            |
+| Trend                  | 10    | SuperTrend, Ichimoku Cloud, Parabolic SAR, Williams Alligator, Zig Zag, Chande Kroll Stop, MA Cross, EMA Cross                            |
+| Volume                 | 9     | Volume, OBV, A/D, CMF, Klinger, PVT, Ease of Movement, Volume Oscillator, Net Volume                                                      |
+| Volatility             | 7    | ATR, BB Width, Historical Volatility, Pivot Points, Standard Deviation, Chaikin Volatility, 52 Week High/Low                              |
+| Statistical            | 7     | Average Price, Median Price, Typical Price, Linear Regression Curve/Slope, ASI, Majority Rule                                             |
 
-Guidance:
-
-- Use uncontrolled for real-time trading to minimize prop-sync churn.
-- Use controlled when external state manager is source of truth.
-- For controlled mode, pass stable references and update only when value actually changes.
-
-## Headless Composition (ShadCN-Friendly)
-
-The package ships no Tailwind classes and has no dependency on any CSS framework. All internal layout uses inline styles. Parent apps can own all UI chrome via event callbacks and render slots:
-
-- `onContextMenu(payload)`
-- `onHudUpdate(payload)`
-- `onEvent(event)`
-- `onClick(params)` — click with time, price, series data
-- `onDblClick(params)` — double-click with same payload
-- `onCrosshairMove(params)` — pointer move with hovered bar data
-- `onVisibleTimeRangeChange(payload)` — viewport range updates
-- `onSizeChange(payload)` — container resize
-- `renderTopBar(ctx)`
-- `renderHud(ctx)`
-- `renderContextMenu(ctx)`
-- `renderIndicatorPaneHeader(indicators)` — custom header above indicator panes
-
-This allows your app to use ShadCN or any design system without fighting chart internals.
-
-## Multi-Series and Compare Modes
-
-`series[]` supports multiple instruments in one chart.
-
-Available compare modes:
-
-- `indexed` (default): baseline normalization for relative comparison.
-- `price`: raw price scale.
-- `dual-axis`: independent ranges (minimal V1.2 implementation).
-
-Rules:
-
-- Single-series `candles`/`heikinAshi` stays candle-rendered even if compare mode is `indexed`.
-- Multi-series timestamp alignment uses primary-series time mapping.
+All indicators compute off-main-thread (Web Worker dispatch) and render via Canvas2D presenters with viewport slicing for O(visible-bars) draw cost.
 
 ## Chart Types
 
@@ -355,64 +253,66 @@ const series = [{
 
 Shapes: `circle`, `square`, `arrowUp`, `arrowDown`. Positions: `aboveBar`, `belowBar`, `inBar`.
 
-## Localization
+## Multi-Series and Compare Modes
+
+`series[]` supports multiple instruments in one chart.
+
+Available compare modes:
+
+- `indexed` (default): baseline normalization for relative comparison.
+- `price`: raw price scale.
+- `dual-axis`: independent ranges (minimal V1.2 implementation).
+
+Rules:
+
+- Single-series `candles`/`heikinAshi` stays candle-rendered even if compare mode is `indexed`.
+- Multi-series timestamp alignment uses primary-series time mapping.
+
+## Multi-Pane Management
+
+N-pane system with resizable separators and independent price scales per pane:
 
 ```tsx
 <FastFinancialChart
-  localization={{
-    locale: 'de-DE',
-    priceFormatter: (price) =>
-      price.toLocaleString('de-DE', { minimumFractionDigits: 2 }),
-    timeFormatter: (ts) => new Date(ts).toLocaleString('de-DE'),
-  }}
+  panes={[
+    { id: 'rsi-pane', stretchFactor: 1, minHeight: 80, label: 'RSI' },
+    { id: 'volume-pane', stretchFactor: 1, minHeight: 60, label: 'Volume' },
+  ]}
+  indicators={[
+    {
+      type: 'RSI',
+      seriesId: 'BTC-USD',
+      params: { period: 14 },
+      pane: 'rsi-pane',
+    },
+    { type: 'Volume', seriesId: 'BTC-USD', pane: 'volume-pane' },
+  ]}
 />
 ```
 
-## Theming
-
-### Partial theme override
-
-Provide partial theme input and override only what you need:
+Programmatic pane management:
 
 ```tsx
-<FastFinancialChart
-  theme={{
-    background: '#090b10',
-    axisText: '#9aa4b2',
-    hudBg: 'rgba(5, 8, 13, 0.88)',
-    hudText: '#e6edf7',
-    fontFamilyMono: 'IBM Plex Mono, ui-monospace, monospace',
-    fontSizeAxis: 11,
-    fontSizeHud: 12,
-    layout: {
-      priceAxisWidth: 74, // px
-      timeAxisHeight: 22, // px
-      gridRows: 6,
-      gridColumns: 8,
-    },
-    indicator: {
-      macd: {
-        signal: '#f59e0b',
-        histogramUp: '#22c55e',
-        histogramDown: '#ef4444',
-      },
-    },
-  }}
-/>
+chartRef.current?.addPane({ stretchFactor: 1, minHeight: 60, label: 'Custom' })
+chartRef.current?.removePane('rsi-pane')
+chartRef.current?.swapPanes('rsi-pane', 'volume-pane')
 ```
 
-Theme updates are supported at runtime and trigger only the relevant overlay/UI redraw paths.
+Heights are computed via stretch factors (responsive to container resize). Dragging a separator adjusts adjacent pane stretch factors. Legacy `'separate'` pane behavior continues to work unchanged.
 
-### Theme presets
+## Built-in Drawing Tools
 
-```tsx
-import { getThemePreset, DARK_THEME_TOKENS, LIGHT_THEME_TOKENS } from '@pairlens/charts/theme'
+| Tool        | Description                                                              |
+| ----------- | ------------------------------------------------------------------------ |
+| `line`      | Trend line with optional `extend: 'left' \| 'right' \| 'both' \| 'none'` |
+| `hline`     | Horizontal price level                                                   |
+| `vline`     | Vertical time marker                                                     |
+| `rectangle` | Price/time box                                                           |
+| `circle`    | Ellipse anchored to two points                                           |
+| `fibonacci` | Fibonacci retracement with configurable levels                           |
+| `text`      | Text annotation (position, content, color, fontSize)                     |
 
-// Retrieve a full theme token set by name
-const tokens = getThemePreset('light')  // or 'dark'
-
-<FastFinancialChart theme={tokens} />
-```
+Line and rectangle drawings show ΔPrice and % change measurement labels when a second point is set.
 
 ## Interaction Model
 
@@ -467,19 +367,103 @@ chartRef.current?.fitContent()
 chartRef.current?.scrollToPosition(barIndex, true) // animated scroll
 ```
 
-## Built-in Drawing Tools
+## Theming
 
-| Tool        | Description                                                              |
-| ----------- | ------------------------------------------------------------------------ |
-| `line`      | Trend line with optional `extend: 'left' \| 'right' \| 'both' \| 'none'` |
-| `hline`     | Horizontal price level                                                   |
-| `vline`     | Vertical time marker                                                     |
-| `rectangle` | Price/time box                                                           |
-| `circle`    | Ellipse anchored to two points                                           |
-| `fibonacci` | Fibonacci retracement with configurable levels                           |
-| `text`      | Text annotation (position, content, color, fontSize)                     |
+### Partial theme override
 
-Line and rectangle drawings show ΔPrice and % change measurement labels when a second point is set.
+Provide partial theme input and override only what you need:
+
+```tsx
+<FastFinancialChart
+  theme={{
+    background: '#090b10',
+    axisText: '#9aa4b2',
+    hudBg: 'rgba(5, 8, 13, 0.88)',
+    hudText: '#e6edf7',
+    fontFamilyMono: 'IBM Plex Mono, ui-monospace, monospace',
+    fontSizeAxis: 11,
+    fontSizeHud: 12,
+    layout: {
+      priceAxisWidth: 74, // px
+      timeAxisHeight: 22, // px
+      gridRows: 6,
+      gridColumns: 8,
+    },
+    indicator: {
+      macd: {
+        signal: '#f59e0b',
+        histogramUp: '#22c55e',
+        histogramDown: '#ef4444',
+      },
+    },
+  }}
+/>
+```
+
+Theme updates are supported at runtime and trigger only the relevant overlay/UI redraw paths.
+
+### Theme presets
+
+```tsx
+import { getThemePreset, DARK_THEME_TOKENS, LIGHT_THEME_TOKENS } from '@pairlens/charts/theme'
+
+// Retrieve a full theme token set by name
+const tokens = getThemePreset('light')  // or 'dark'
+
+<FastFinancialChart theme={tokens} />
+```
+
+## Localization
+
+```tsx
+<FastFinancialChart
+  localization={{
+    locale: 'de-DE',
+    priceFormatter: (price) =>
+      price.toLocaleString('de-DE', { minimumFractionDigits: 2 }),
+    timeFormatter: (ts) => new Date(ts).toLocaleString('de-DE'),
+  }}
+/>
+```
+
+## Headless Composition (ShadCN-Friendly)
+
+The package ships no Tailwind classes and has no dependency on any CSS framework. All internal layout uses inline styles. Parent apps can own all UI chrome via event callbacks and render slots:
+
+- `onContextMenu(payload)`
+- `onHudUpdate(payload)`
+- `onEvent(event)`
+- `onClick(params)`: click with time, price, series data
+- `onDblClick(params)`: double-click with same payload
+- `onCrosshairMove(params)`: pointer move with hovered bar data
+- `onVisibleTimeRangeChange(payload)`: viewport range updates
+- `onSizeChange(payload)`: container resize
+- `renderTopBar(ctx)`
+- `renderHud(ctx)`
+- `renderContextMenu(ctx)`
+- `renderIndicatorPaneHeader(indicators)`: custom header above indicator panes
+
+This allows your app to use ShadCN or any design system without fighting chart internals.
+
+## Controlled vs Uncontrolled State
+
+`FastFinancialChart` supports controlled or uncontrolled operation for expensive domains:
+
+```tsx
+<FastFinancialChart
+  controlled={{
+    viewport: false,
+    drawings: false,
+    indicators: false,
+  }}
+/>
+```
+
+Guidance:
+
+- Use uncontrolled for real-time trading to minimize prop-sync churn.
+- Use controlled when external state manager is source of truth.
+- For controlled mode, pass stable references and update only when value actually changes.
 
 ## Extensibility: Indicators and Drawings
 
@@ -525,7 +509,7 @@ const rayShape: DrawingShapeDefinition = {
   hitTest: () => null,
   render: () => {},
   getHandles: () => [],
-  // Optional drag behavior hooks — implement to control move/resize semantics:
+  // Optional drag behavior hooks. Implement to control move/resize semantics:
   // onDrag(drawing, point) => DrawingObject
   // onShift(drawing, deltaTs, deltaPrice) => DrawingObject
   // onHandleResize(drawing, handleId, point) => DrawingObject
@@ -561,7 +545,7 @@ Coordinate helpers available: `priceToY`, `indexToX`, `timeToX`, `yToPrice`, `xT
 
 ### Custom series
 
-Define entirely new series types with custom data formats and Canvas2D rendering. Custom series don't modify the WebGL pipeline — they render as Canvas2D overlays:
+Define entirely new series types with custom data formats and Canvas2D rendering. Custom series don't modify the WebGL pipeline: they render as Canvas2D overlays.
 
 ```tsx
 import type { CustomSeriesDefinition } from '@pairlens/charts/types'
@@ -596,38 +580,6 @@ const heatmapDef: CustomSeriesDefinition = {
 ```
 
 Custom series support optional `compute()` preprocessing, custom `priceRange()` for y-axis contribution, and per-pane routing.
-
-## Multi-Pane Management
-
-N-pane system with resizable separators and independent price scales per pane:
-
-```tsx
-<FastFinancialChart
-  panes={[
-    { id: 'rsi-pane', stretchFactor: 1, minHeight: 80, label: 'RSI' },
-    { id: 'volume-pane', stretchFactor: 1, minHeight: 60, label: 'Volume' },
-  ]}
-  indicators={[
-    {
-      type: 'RSI',
-      seriesId: 'BTC-USD',
-      params: { period: 14 },
-      pane: 'rsi-pane',
-    },
-    { type: 'Volume', seriesId: 'BTC-USD', pane: 'volume-pane' },
-  ]}
-/>
-```
-
-Programmatic pane management:
-
-```tsx
-chartRef.current?.addPane({ stretchFactor: 1, minHeight: 60, label: 'Custom' })
-chartRef.current?.removePane('rsi-pane')
-chartRef.current?.swapPanes('rsi-pane', 'volume-pane')
-```
-
-Heights are computed via stretch factors (responsive to container resize). Dragging a separator adjusts adjacent pane stretch factors. Legacy `'separate'` pane behavior continues to work unchanged.
 
 ## Coordinate Conversion APIs
 
@@ -678,7 +630,7 @@ await mcp.execute('addIndicator', {
 - **Pane management**: `addPane`, `removePane`, `swapPanes`, `updatePane`, `getPaneLayout`.
 - **Series primitives**: `addPrimitive`, `removePrimitive`, `listPrimitives`.
 - **Custom series**: `addCustomSeries`, `removeCustomSeries`, `updateCustomSeriesData`, `listCustomSeries`.
-- **Theme**: `setTheme` — apply a partial theme at runtime.
+- **Theme**: `setTheme` applies a partial theme at runtime.
 - **History**: `undo`, `redo`.
 - **Agent ops**: `getChartState`, `getVisibleData`, `getIndicatorValue`, `getDrawingState`, `getCapabilities`, `subscribeEvents`, `unsubscribeEvents`, `screenshot`, `takeScreenshot` (with `includeCrosshair`/`includeOverlays` options).
 
@@ -705,8 +657,8 @@ Runtime validation rejects malformed payloads for deterministic tool execution.
 
 Use targeted imports to reduce bundle size:
 
-- `@pairlens/charts` — core engine (no React)
-- `@pairlens/charts/react` — `<FastFinancialChart />`, `<DepthChart />`, hooks
+- `@pairlens/charts`: core engine (no React)
+- `@pairlens/charts/react`: `<FastFinancialChart />`, `<DepthChart />`, hooks
 - `@pairlens/charts/types`
 - `@pairlens/charts/mcp`
 - `@pairlens/charts/indicators`
@@ -727,21 +679,66 @@ The package is configured with `sideEffects: false`.
 - Use `snapshotThrottleMs` and consume `onSnapshot` only where needed.
 - Offload non-chart UI work from pointer-move events.
 
-## Built-in Indicators (90)
+## Core Goals
 
-90 built-in technical indicators covering major TradingView Advanced Charts categories. See [INDICATORS.md](./INDICATORS.md) for the full list with parameters, pane types, and implementation details.
+- Performance-first rendering for large OHLCV datasets and live tick streams.
+- Headless composition so parent apps fully own UI chrome (menus, HUDs, toolbars, modals).
+- Composable architecture where indicator calculation and rendering are separate concerns.
+- AI-first deterministic control surface through MCP-compatible tool schemas and executor.
+- Extensibility for custom indicators, custom drawing shapes, series primitives, and custom series types.
 
-| Category               | Count | Examples                                                                                                                                  |
-| ---------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Moving Averages        | 17    | EMA, SMA, WMA, DEMA, TEMA, VWAP, HMA, VWMA, ALMA, KAMA, SMMA, LSMA, McGinley Dynamic, Guppy MMA, Hamming                                  |
-| Oscillators & Momentum | 35    | RSI, MACD, Stochastic, StochRSI, Williams %R, CCI, MFI, ADX, TRIX, Fisher Transform, Connors RSI, TSI, Price Oscillator, Rank Correlation |
-| Bands & Channels       | 5     | Bollinger Bands, Donchian Channels, Keltner Channels, Envelopes, Price Channel                                                            |
-| Trend                  | 10    | SuperTrend, Ichimoku Cloud, Parabolic SAR, Williams Alligator, Zig Zag, Chande Kroll Stop, MA Cross, EMA Cross                            |
-| Volume                 | 9     | Volume, OBV, A/D, CMF, Klinger, PVT, Ease of Movement, Volume Oscillator, Net Volume                                                      |
-| Volatility             | 7     | ATR, BB Width, Historical Volatility, Pivot Points, Standard Deviation, Chaikin Volatility, 52 Week High/Low                              |
-| Statistical            | 7     | Average Price, Median Price, Typical Price, Linear Regression Curve/Slope, ASI, Majority Rule                                             |
+## Architecture
 
-All indicators compute off-main-thread (Web Worker dispatch) and render via Canvas2D presenters with viewport slicing for O(visible-bars) draw cost.
+The library is split into three layers:
+
+- Core engine (no React): data stores, render pipeline, interaction model, command bus.
+- Feature modules: indicators, drawings, MCP tooling, theme resolution.
+- React adapter: `<FastFinancialChart />`, imperative ref API, hooks, render slots.
+
+High-level pipeline:
+
+1. Parent provides initial `series[]` and config.
+2. Engine builds WebGL2 + Canvas overlay stack.
+3. Dirty-flag scheduler redraws only affected layers.
+4. Tick/bar updates flow through imperative ref for O(1) hot path updates.
+5. Indicators compute in worker (or inline fallback), then commit once.
+6. Parent receives chart events and renders custom UI around chart state.
+
+## Rendering Model
+
+The chart uses a layered canvas stack:
+
+- Main canvas (WebGL2): candles/bar/line/area/baseline/histogram geometry.
+- Indicator canvas (Canvas2D): indicator presenters (overlay + N user panes), series primitives, custom series.
+- Overlay canvas (Canvas2D): axis labels/text.
+- UI canvas (Canvas2D): crosshair + interaction overlays.
+
+Why this split:
+
+- Geometry stays in GPU path.
+- Text/UI avoids WebGL font-atlas complexity.
+- Crosshair/pointer movement only invalidates cheap UI layers.
+
+## Performance Design Decisions
+
+- Dirty flags + RAF scheduler: render only changed layers.
+- Viewport slicing: render complexity scales with visible bars, not full dataset size.
+- Incremental tick ingestion: same-bucket tick mutates last bar in-place.
+- Burst ingestion API: `applyTicks(updates)` for batched live feeds.
+- Snapshot split: lightweight snapshots by default; heavy data only by explicit request.
+- Parallel indicator scheduling: compute requests execute in parallel and commit once.
+- Pre-allocated interleaved Float32Array in WebGL candle program: single `gl.bufferData` call per frame, zero intermediate allocations.
+- Cached hex→RGBA conversion: color parsing runs once on theme change, not per frame.
+- Incremental price range tracking: min/max recalculated only on viewport or series change, not every tick.
+- `getBoundingClientRect` cached on resize: pointer-move path performs no layout recalculation.
+- Structural sharing for undo stack: only the changed drawing is cloned, not the entire array.
+- WebGL context loss recovery: `webglcontextlost` / `webglcontextrestored` handlers re-initialize programs and re-upload buffers.
+- `preserveDrawingBuffer: false` for lower GPU overhead.
+- Shallow-compare guard on React `updateProps`: rest-spread props reference is compared by key before calling engine, eliminating unnecessary work on parent re-renders.
+- MCP `getData` pagination: `limit`/`offset` params avoid cloning full bar arrays for large datasets.
+- GPU-side viewport transform: NDC conversions moved to vertex shader uniforms. Viewport pan/zoom is O(1) uniform update with no buffer refill. All bars buffered once, GPU clips offscreen geometry.
+- Pre-bucketed z-order cache in PrimitiveRegistry: O(1) render-time lookup per z-order layer, rebuilt lazily on mutation only.
+- Visible-instance cache in CustomSeriesStore: avoids per-frame array allocation for custom series visibility filtering.
 
 ## Current Scope (V1.3)
 
@@ -794,7 +791,7 @@ bun run build
 
 ## Releasing (maintainers)
 
-Releases are published to NPM by CI (`.github/workflows/publish.yml`) whenever a `v*` tag is pushed. The workflow re-runs typecheck + tests, verifies the tag matches `package.json`, and publishes with [provenance](https://docs.npmjs.com/generating-provenance-statements). It authenticates via [trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC — no token secret): the trusted publisher is configured on the package's npm access page (GitHub user `juanignaciomolina`, repo `pairlens-charts`, workflow `publish.yml`).
+Releases are published to NPM by CI (`.github/workflows/publish.yml`) whenever a `v*` tag is pushed. The workflow re-runs typecheck + tests, verifies the tag matches `package.json`, and publishes with [provenance](https://docs.npmjs.com/generating-provenance-statements). It authenticates via [trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC, no token secret): the trusted publisher is configured on the package's npm access page (GitHub user `juanignaciomolina`, repo `pairlens-charts`, workflow `publish.yml`).
 
 ```bash
 npm version minor        # bumps package.json and creates the vX.Y.Z tag
@@ -803,4 +800,4 @@ git push origin main --follow-tags
 
 ## License
 
-[MIT](./LICENSE) — free for commercial and non-commercial use, no tiers, no watermark.
+[MIT](./LICENSE). Free for commercial and non-commercial use, no tiers, no watermark.
