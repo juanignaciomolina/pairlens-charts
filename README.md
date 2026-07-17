@@ -794,7 +794,7 @@ bun run build
 
 ## Releasing (maintainers)
 
-Releases are published to NPM by CI (`.github/workflows/publish.yml`) whenever a `v*` tag is pushed. The workflow re-runs typecheck + tests, verifies the tag matches `package.json`, and publishes with [provenance](https://docs.npmjs.com/generating-provenance-statements). It authenticates with the `NPM_TOKEN` repository secret (a granular automation token with publish rights on the `@pairlens` scope).
+Releases are published to NPM by CI (`.github/workflows/publish.yml`) whenever a `v*` tag is pushed. The workflow re-runs typecheck + tests, verifies the tag matches `package.json`, and publishes with [provenance](https://docs.npmjs.com/generating-provenance-statements). It authenticates via [trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC — no token secret): the trusted publisher is configured on the package's npm access page (GitHub user `juanignaciomolina`, repo `pairlens-charts`, workflow `publish.yml`).
 
 ```bash
 npm version minor        # bumps package.json and creates the vX.Y.Z tag
