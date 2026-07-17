@@ -1,6 +1,6 @@
-# @pairlens/charts — Indicator Coverage
+# Indicator Coverage
 
-Tracking parity with [TradingView Advanced Charts](https://www.tradingview.com/charting-library-docs/latest/ui_elements/indicators/Indicators-List/) (146 built-in indicators).
+The full list of built-in indicators in `@pairlens/charts`, with their type ids, pane placement, and key parameters (defaults in parentheses). Coverage is tracked against [TradingView Advanced Charts](https://www.tradingview.com/charting-library-docs/latest/ui_elements/indicators/Indicators-List/) and its 146 built-in indicators.
 
 ## Supported (90 / 146)
 
@@ -13,7 +13,7 @@ Tracking parity with [TradingView Advanced Charts](https://www.tradingview.com/c
 | WMA                     | `WMA`                   | overlay | `period` (20)                              |
 | DEMA                    | `DEMA`                  | overlay | `period` (20)                              |
 | TEMA                    | `TEMA`                  | overlay | `period` (20)                              |
-| VWAP                    | `VWAP`                  | overlay | —                                          |
+| VWAP                    | `VWAP`                  | overlay | none                                       |
 | HMA                     | `HMA`                   | overlay | `period` (9)                               |
 | VWMA                    | `VWMA`                  | overlay | `period` (20)                              |
 | ALMA                    | `ALMA`                  | overlay | `period` (9), `offset` (0.85), `sigma` (6) |
@@ -24,7 +24,7 @@ Tracking parity with [TradingView Advanced Charts](https://www.tradingview.com/c
 | Moving Average Hamming  | `MovingAverageHamming`  | overlay | `period` (20)                              |
 | Moving Average Channel  | `MovingAverageChannel`  | overlay | `period` (20)                              |
 | Moving Average Multiple | `MovingAverageMultiple` | overlay | `periods` ('10,20,50,100,200')             |
-| Guppy MMA               | `GuppyMMA`              | overlay | —                                          |
+| Guppy MMA               | `GuppyMMA`              | overlay | none                                       |
 
 ### Oscillators & Momentum (35)
 
@@ -95,15 +95,15 @@ Tracking parity with [TradingView Advanced Charts](https://www.tradingview.com/c
 
 | Indicator          | Type                | Pane     | Key Params                              |
 | ------------------ | ------------------- | -------- | --------------------------------------- |
-| Volume             | `Volume`            | separate | —                                       |
-| OBV                | `OBV`               | separate | —                                       |
-| A/D                | `AD`                | separate | —                                       |
+| Volume             | `Volume`            | separate | none                                    |
+| OBV                | `OBV`               | separate | none                                    |
+| A/D                | `AD`                | separate | none                                    |
 | CMF                | `CMF`               | separate | `period` (20)                           |
 | Klinger Oscillator | `KlingerOscillator` | separate | `fast` (34), `slow` (55), `signal` (13) |
-| PVT                | `PVT`               | separate | —                                       |
+| PVT                | `PVT`               | separate | none                                    |
 | Ease of Movement   | `EaseOfMovement`    | separate | `period` (14)                           |
 | Volume Oscillator  | `VolumeOscillator`  | separate | `fast` (5), `slow` (10)                 |
-| Net Volume         | `NetVolume`         | separate | —                                       |
+| Net Volume         | `NetVolume`         | separate | none                                    |
 
 ### Volatility (7)
 
@@ -121,9 +121,9 @@ Tracking parity with [TradingView Advanced Charts](https://www.tradingview.com/c
 
 | Indicator                | Type                     | Pane     | Key Params      |
 | ------------------------ | ------------------------ | -------- | --------------- |
-| Average Price            | `AveragePrice`           | overlay  | —               |
-| Median Price             | `MedianPrice`            | overlay  | —               |
-| Typical Price            | `TypicalPrice`           | overlay  | —               |
+| Average Price            | `AveragePrice`           | overlay  | none            |
+| Median Price             | `MedianPrice`            | overlay  | none            |
+| Typical Price            | `TypicalPrice`           | overlay  | none            |
 | Linear Regression Curve  | `LinearRegressionCurve`  | overlay  | `period` (25)   |
 | Linear Regression Slope  | `LinearRegressionSlope`  | separate | `period` (25)   |
 | Accumulative Swing Index | `AccumulativeSwingIndex` | separate | `limitMove` (0) |
@@ -138,7 +138,7 @@ Tracking parity with [TradingView Advanced Charts](https://www.tradingview.com/c
 | Indicator                                           | Reason                                      |
 | --------------------------------------------------- | ------------------------------------------- |
 | Volume Profile (Fixed Range / Visible Range)        | Requires tick-level data, complex rendering |
-| Advance/Decline                                     | Market breadth — not per-instrument         |
+| Advance/Decline                                     | Market breadth, not per-instrument          |
 | Correlation Coefficient / Log                       | Multi-asset comparison                      |
 | Ratio / Spread                                      | Multi-asset comparison                      |
 | Volatility Index (VIX)                              | External data feed                          |
@@ -151,22 +151,22 @@ Tracking parity with [TradingView Advanced Charts](https://www.tradingview.com/c
 
 Each indicator follows a 3-file pattern:
 
-1. **Compute** — `src/core/indicators/compute/<name>.ts`
+1. **Compute**: `src/core/indicators/compute/<name>.ts`
    - Pure function: `IndicatorComputeFn = ({ bars, params }) => IndicatorValuePoint[]`
    - Parse params with safe defaults: `Math.max(1, Number(params.xxx ?? default))`
    - Guard insufficient data: `if (bars.length < period) return []`
 
-2. **Presenter** — `src/core/indicators/presenters/<name>-presenter.ts`
+2. **Presenter**: `src/core/indicators/presenters/<name>-presenter.ts`
    - Rendering function: `IndicatorPresenter = (context) => void`
    - Use shared utilities from `./utils.ts` (`toLinePoints`, `toMultiLinePoints`, `strokeLine`, `drawGuideLines`, etc.)
    - Overlay indicators use `computePriceRange`; separate-pane use `computeNumericRange` or fixed ranges
 
-3. **Wire up** — update these files:
-   - `src/types/indicators.ts` — add to `BuiltInIndicatorType` union
-   - `src/core/indicators/compute/dispatch.ts` — import + register compute function
-   - `src/core/indicators/registry.ts` — import presenter + register `IndicatorDefinition`
-   - `src/__tests__/indicators.test.ts` — add compute tests
-   - `src/types/theme.ts` + `src/core/theme/tokens.ts` + `src/core/theme/resolve-theme.ts` — only if new theme colors needed
+3. **Wire up**: update these files:
+   - `src/types/indicators.ts`: add to `BuiltInIndicatorType` union
+   - `src/core/indicators/compute/dispatch.ts`: import + register compute function
+   - `src/core/indicators/registry.ts`: import presenter + register `IndicatorDefinition`
+   - `src/__tests__/indicators.test.ts`: add compute tests
+   - `src/types/theme.ts` + `src/core/theme/tokens.ts` + `src/core/theme/resolve-theme.ts`: only if new theme colors needed
 
 ### Shared Presenter Utilities (`src/core/indicators/presenters/utils.ts`)
 
