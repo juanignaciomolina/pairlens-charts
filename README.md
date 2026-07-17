@@ -1,5 +1,9 @@
 # Fast Financial Charts
 
+[![npm version](https://img.shields.io/npm/v/%40pairlens%2Fcharts?logo=npm&color=cb3837)](https://www.npmjs.com/package/@pairlens/charts)
+[![npm downloads](https://img.shields.io/npm/dm/%40pairlens%2Fcharts)](https://www.npmjs.com/package/@pairlens/charts)
+[![license](https://img.shields.io/npm/l/%40pairlens%2Fcharts)](./LICENSE)
+
 **A WebGL2 financial charting library for the web: candlesticks, 90 built-in indicators, drawings, multi-pane layouts, live tick streaming, and an AI control surface. Free and MIT licensed.**
 
 `@pairlens/charts` is the chart engine behind the [Pairlens](https://github.com/juanignaciomolina/pairlens) trading terminal. It is not a demo extracted from an app: the exact package published here renders live exchange feeds in production, every day, at tick rate. It was built to stand next to commercial charting SDKs and hold its own.
